@@ -1,0 +1,343 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <record id="homepage" model="ir.ui.view">
+        <field name="name">Home</field>
+        <field name="key">beverage_distributor.homepage</field>
+        <field name="website_id" ref="website.default_website"/>
+        <field name="type">qweb</field>
+        <field name="arch" type="xml">
+            <t name="Homepage" t-name="website.homepage">
+                <t t-call="website.layout">
+                    <t t-set="pageName" t-value="'homepage'"/>
+                    <div id="wrap" class="oe_structure">
+                        <section class="s_cover parallax s_parallax_is_fixed bg-black-50 o_colored_level pb256 pt232" data-scroll-background-ratio="1" data-oe-shape-data="{&quot;shape&quot;:&quot;web_editor/Zigs/06&quot;}" data-snippet="s_cover" data-name="Cover">
+                            <span class="s_parallax_bg oe_img_bg o_bg_img_center" style="background-position: 50% 100%; background-image: url(&quot;/unsplash/7dpHzyA7rb8/1077/beverages.jpg?unique=e95c81ae&quot;);" data-mimetype="image/webp" data-original-id="1072" data-original-src="/unsplash/7dpHzyA7rb8/beverages.jpg?unique=17555d45" data-mimetype-before-conversion="image/jpeg" data-resize-width="1920"/>
+                            <div class="o_we_bg_filter bg-black-50"/>
+                            <div class="o_we_shape o_web_editor_Origins_14_001"/>
+                            <div class="container s_allow_columns">
+                                <i class="fa fa-glass fa-5x text-o-color-3 mx-auto my-4"/>
+                                <h1 class="display-3" style="text-align: center; font-weight: bold;">&amp;nbsp;Relies on amazing partners<br/></h1>
+                                <p class="lead" style="text-align: center;">
+                Our professional yet convivial service will make your supply&amp;nbsp;experience unforgettable.
+        </p>
+                                <p class="lead" style="text-align: center;">
+                                    <br/>
+                                </p>
+                                <p style="text-align: center;">
+                                    <a class="btn btn-primary" href="/shop">Shop our products</a>
+                                </p>
+                            </div>
+                        </section>
+                        <section class="s_features pt32 pb32 o_colored_level" data-snippet="s_features" data-name="Features">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-4 pt32 pb32 text-center o_colored_level">
+                                        <i class="fa fa-shopping-basket fa-2x rounded-circle bg-primary m-3"/>
+                                        <h3>
+                Order online&amp;nbsp;<br/></h3>
+                                        <p>&amp;nbsp;Get delivered next week.<br/></p>
+                                    </div>
+                                    <div class="col-lg-4 pt32 pb32 text-center o_colored_level">
+                                        <i class="fa fa-gift fa-2x rounded-circle bg-400 m-3"/>
+                                        <h3>
+                Get rewards&amp;nbsp;<br/></h3>
+                                        <p>&amp;nbsp;Enjoy our B2B loyalty program<br/></p>
+                                    </div>
+                                    <div class="col-lg-4 pt32 pb32 text-center o_colored_level">
+                                        <i class="fa fa-truck bg-secondary m-3 rounded-circle fa-2x"/>
+                                        <h3>
+                Free shipping&amp;nbsp;<br/></h3>
+                                        <p>&amp;nbsp;For order beyond 300$<br/></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="s_numbers o_cc o_cc5 pt80 pb80 o_colored_level" data-snippet="s_numbers" data-name="Numbers" style="background-color: #1d172b;">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-3 text-center pt24 pb24 o_colored_level">
+                                        <span class="s_number display-4 o_default_snippet_text">184</span>
+                                        <h6 class="o_default_snippet_text">deliveries each week</h6>
+                                    </div>
+                                    <div class="col-lg-3 text-center pt24 pb24 o_colored_level">
+                                        <span class="s_number display-4 o_default_snippet_text">2545</span>
+                                        <h6 class="o_default_snippet_text">references</h6>
+                                    </div>
+                                    <div class="col-lg-3 text-center pt24 pb24 o_colored_level">
+                                        <span class="s_number display-4 o_default_snippet_text">10%</span>
+                                        <h6 class="o_default_snippet_text">for B2B partners</h6>
+                                    </div>
+                                    <div class="col-lg-3 text-center pt24 pb24 o_colored_level">
+                                        <span class="s_number display-4 o_default_snippet_text">1000+</span>
+                                        <h6 class="o_default_snippet_text">happy customers</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="s_picture o_cc o_cc3 pt64 o_colored_level" data-oe-shape-data="{'shape':'web_editor/Origins/04_001'}" data-snippet="s_picture" data-name="Title - Image">
+                            <div class="o_we_shape o_web_editor_Origins_04_001"/>
+                            <div class="container">
+                                <h2 class="display-3-fs" style="text-align: center;">
+                                    <font class="text-o-color-5">Welcome our wine assortment</font>
+                                    <br/>
+                                </h2>
+                                <p style="text-align: center;">
+                                    <font class="text-o-color-5">Thanks to our new wine specialist, we are now proud to propose more than 100 different wines in our stock.</font>
+                                    <br/>
+                                </p>
+                                <p style="text-align: center;">
+                                    <font class="text-o-color-5">​</font>
+                                </p>
+                                <div class="row">
+                                    <div class="pb24 col-lg-8 offset-lg-2 o_colored_level" style="text-align: center;">
+                                        <figure class="figure">
+                                            <img src="/unsplash/y2Vw5Tgtk5s/1075/wines.jpg?unique=5d3cc079" alt="labeled bottles on rack" class="figure-img img-fluid img-thumbnail padding-large img o_we_custom_image" data-mimetype="image/webp" data-original-id="1074" data-original-src="/unsplash/y2Vw5Tgtk5s/wines.jpg?unique=edb2442f" data-mimetype-before-conversion="image/jpeg" data-resize-width="NaN"/>
+                                            <figcaption class="figure-caption text-muted py-3">&amp;nbsp;Visit us to get a free degustation for B2B partners !<br/></figcaption>
+                                        </figure>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="s_text_block pt80 pb80 o_colored_level" data-snippet="s_text_block" data-name="Text">
+                            <div class="s_allow_columns o_container_small">
+                                <p>
+                A wide selection of beverages with local products. We’re constantly looking to propose new drinks and flavors. While respecting seasons' products and nature.
+        </p>
+                                <p>
+                At the Bistro, you can expect a wide selection of beverages to accompany your meal. Come and visit us for a Sunday brunch, refreshing juices full of flavor, or delicious cocktails that satisfy your thirst. And each day, you’ll discover our Today’s Special.
+        </p>
+                            </div>
+                        </section>
+                        <section class="s_quotes_carousel_wrapper o_colored_level oe_img_bg o_bg_img_center" data-vxml="001" data-vcss="001" data-snippet="s_quotes_carousel" data-name="Quotes" style="background-image: url(&quot;/unsplash/r4UGyzh_8Ik/1076/beers.jpg?unique=aa82b155&quot;);" data-mimetype="image/webp" data-original-id="1073" data-original-src="/unsplash/r4UGyzh_8Ik/beers.jpg?unique=5da791b4" data-mimetype-before-conversion="image/jpeg" data-resize-width="1920">
+                            <div class="s_quotes_carousel carousel slide s_carousel_rounded" data-bs-interval="10000" id="myQuoteCarousel251175">
+                                <ol class="carousel-indicators o_we_no_overlay">
+                                    <li class="active" data-bs-target="#myQuoteCarousel251175" data-bs-slide-to="0" aria-current="true"/>
+                                    <li data-bs-target="#myQuoteCarousel251175" data-bs-slide-to="1"/>
+                                    <li data-bs-target="#myQuoteCarousel251175" data-bs-slide-to="2"/>
+                                </ol>
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active o_colored_level pt184 pb216" style="" data-name="Slide">
+                                        <div class="container">
+                                            <blockquote class="s_blockquote s_blockquote_classic blockquote mx-auto w-50" data-name="Blockquote">
+                                                <i class="fa fa-1x fa-quote-left rounded float-start bg-o-color-2 s_blockquote_icon"/>
+                                                <div class="s_blockquote_content o_cc1">
+                                                    <p>
+                Cosy and friendly, good atmosphere and super drinks. Especially the homemade lemonade.
+        </p>
+                                                    <footer class="blockquote-footer"><img src="/web/image/website.s_quotes_carousel_demo_image_3" class="s_blockquote_avatar img rounded-circle me-2" alt="" loading="lazy"/>
+                                                                        Jane SMITH • CEO of Beverage Co.
+                                                                </footer>
+                                                </div>
+                                            </blockquote>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item oe_img_bg o_bg_img_center pt120 pb120" style="background-image: none;" data-name="Slide">
+                                        <div class="container">
+                                            <blockquote class="s_blockquote s_blockquote_classic blockquote w-50 mx-auto" data-name="Blockquote">
+                                                <i class="fa fa-1x fa-quote-left rounded float-start bg-o-color-2 s_blockquote_icon"/>
+                                                <div class="s_blockquote_content o_cc1">
+                                                    <p>
+                This place is perfect for groups or a casual date night.
+        </p>
+                                                    <footer class="blockquote-footer"><img src="/web/image/website.s_quotes_carousel_demo_image_4" class="s_blockquote_avatar img rounded-circle me-2" alt="" loading="lazy"/>
+                                                                        John SMITH • CEO of Beverage Co.
+                                                                </footer>
+                                                </div>
+                                            </blockquote>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item oe_img_bg o_bg_img_center pt120 pb120" style="background-image: none;" data-name="Slide">
+                                        <div class="container">
+                                            <blockquote class="s_blockquote s_blockquote_classic blockquote w-50 mx-auto" data-name="Blockquote">
+                                                <i class="fa fa-1x fa-quote-left rounded float-start bg-o-color-2 s_blockquote_icon"/>
+                                                <div class="s_blockquote_content o_cc1">
+                                                    <p>
+                A truly exquisite drinking experience. I highly recommend the Margarita, out of this world.
+        </p>
+                                                    <footer class="blockquote-footer"><img src="/web/image/website.s_quotes_carousel_demo_image_5" class="s_blockquote_avatar img rounded-circle me-2" alt="" loading="lazy"/>
+                                                                        Iris SMITH • CEO of Beverage Co.
+                                                                </footer>
+                                                </div>
+                                            </blockquote>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="carousel-control-prev o_not_editable o_we_no_overlay" role="img" aria-label="Previous" title="Previous" data-bs-target="#myQuoteCarousel251175" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon"/>
+                                    <span class="visually-hidden">Previous</span>
+                                </div>
+                                <div class="carousel-control-next o_not_editable o_we_no_overlay" role="img" aria-label="Next" title="Next" data-bs-target="#myQuoteCarousel251175" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon"/>
+                                    <span class="visually-hidden">Next</span>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </t>
+            </t>
+        </field>
+    </record>
+    <record id="services" model="ir.ui.view">
+        <field name="name">Services</field>
+        <field name="key">beverage_distributor.services</field>
+        <field name="website_id" ref="website.default_website"/>
+        <field name="type">qweb</field>
+        <field name="arch" type="xml">
+            <t name="Services" t-name="website.services">
+                <t t-call="website.layout">
+                    <div id="wrap">
+                        <div class="oe_structure">
+                            <section class="s_title parallax s_parallax_is_fixed bg-black-50 pt24 pb24" data-vcss="001" data-snippet="s_title" data-scroll-background-ratio="1">
+                                <span class="s_parallax_bg oe_img_bg" style="background-image: url('/web/image/website.s_parallax_default_image'); background-position: 50% 0;"/>
+                                <div class="o_we_bg_filter bg-black-50"/>
+                                <div class="container">
+                                    <h1>Services</h1>
+                                </div>
+                            </section>
+                        </div>
+                        <div class="oe_structure">
+                            <section class="s_three_columns o_colored_level pt80 pb80 bg-200" data-vcss="001" data-snippet="s_three_columns">
+                                <div class="container">
+                                    <div class="row d-flex align-items-stretch">
+                                        <div class="col-lg-4 s_col_no_bgcolor pt16 pb16">
+                                            <div class="card text-bg-white h-100">
+                                                <img class="card-img-top" src="/web/image/beverage_distributor.website_image_02" alt="" loading="lazy"/>
+                                                <div class="card-body">
+                                                    <h3 class="card-title">Quality Products</h3>
+                                                    <p class="card-text">Adapt these three columns to fit your design need. To duplicate, delete or move columns, select the column and use the top icons to perform your action.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 s_col_no_bgcolor pt16 pb16">
+                                            <div class="card text-bg-white h-100">
+                                                <img class="card-img-top" src="/web/image/beverage_distributor.website_image_03" alt="" loading="lazy"/>
+                                                <div class="card-body">
+                                                    <h3 class="card-title">Fast Delivery</h3>
+                                                    <p class="card-text">To add a fourth column, reduce the size of these three columns using the right icon of each block. Then, duplicate one of the columns to create a new one as a copy.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 s_col_no_bgcolor pt16 pb16">
+                                            <div class="card text-bg-white h-100">
+                                                <img class="card-img-top" src="/web/image/beverage_distributor.website_image_04" alt="" loading="lazy"/>
+                                                <div class="card-body">
+                                                    <h3 class="card-title">Beverage Selection</h3>
+                                                    <p class="card-text">Delete the above image or replace it with a picture that showcases our products. Click on the picture to change its rounded corner style.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="s_quotes_carousel_wrapper" data-vxml="001" data-vcss="001" data-snippet="s_quotes_carousel">
+                                <div class="s_quotes_carousel carousel slide s_carousel_rounded oe_img_bg o_bg_img_center" data-bs-interval="10000" style="background-image: url('/web/image/website.s_quotes_carousel_demo_image_1');" id="myQuoteCarousel273629">
+                                    <ol class="carousel-indicators">
+                                        <li data-bs-slide-to="0" class="active" data-bs-target="#myQuoteCarousel273629"/>
+                                        <li data-bs-slide-to="1" data-bs-target="#myQuoteCarousel273629"/>
+                                        <li data-bs-slide-to="2" data-bs-target="#myQuoteCarousel273629"/>
+                                    </ol>
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item active oe_img_bg o_bg_img_center pt120 pb120" data-name="Slide">
+                                            <div class="container">
+                                                <blockquote class="s_blockquote s_blockquote_classic blockquote mx-auto w-50" data-name="Blockquote">
+                                                    <i class="fa fa-1x fa-quote-left rounded float-start bg-o-color-2 s_blockquote_icon"/>
+                                                    <div class="s_blockquote_content o_cc1">
+                                                        <p>
+                Cosy and friendly, good atmosphere and super drinks. Especially the homemade lemonade.
+        </p>
+                                                        <footer class="blockquote-footer"><img src="/web/image/website.s_quotes_carousel_demo_image_3" class="s_blockquote_avatar img rounded-circle me-2" alt="" loading="lazy"/>
+                                                                        Jane SMITH • CEO of Beverage Co.
+                                                                </footer>
+                                                    </div>
+                                                </blockquote>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item oe_img_bg o_bg_img_center pt120 pb120" data-name="Slide">
+                                            <div class="container">
+                                                <blockquote class="s_blockquote s_blockquote_classic blockquote w-50 mx-auto" data-name="Blockquote">
+                                                    <i class="fa fa-1x fa-quote-left rounded float-start bg-o-color-2 s_blockquote_icon"/>
+                                                    <div class="s_blockquote_content o_cc1">
+                                                        <p>
+                This place is perfect for groups or a casual date night.
+        </p>
+                                                        <footer class="blockquote-footer"><img src="/web/image/website.s_quotes_carousel_demo_image_4" class="s_blockquote_avatar img rounded-circle me-2" alt="" loading="lazy"/>
+                                                                        John SMITH • CEO of Beverage Co.
+                                                                </footer>
+                                                    </div>
+                                                </blockquote>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-item oe_img_bg o_bg_img_center pt120 pb120" style="background-image: none;" data-name="Slide">
+                                            <div class="container">
+                                                <blockquote class="s_blockquote s_blockquote_classic blockquote w-50 mx-auto" data-name="Blockquote">
+                                                    <i class="fa fa-1x fa-quote-left rounded float-start bg-o-color-2 s_blockquote_icon"/>
+                                                    <div class="s_blockquote_content o_cc1">
+                                                        <p>
+                A truly exquisite drinking experience. I highly recommend the Margarita, out of this world.
+        </p>
+                                                        <footer class="blockquote-footer"><img src="/web/image/website.s_quotes_carousel_demo_image_5" class="s_blockquote_avatar img rounded-circle me-2" alt="" loading="lazy"/>
+                                                                        Iris SMITH • CEO of Beverage Co.
+                                                                </footer>
+                                                    </div>
+                                                </blockquote>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-control-prev o_not_editable" data-bs-slide="prev" role="img" aria-label="Previous" title="Previous" data-bs-target="#myQuoteCarousel273629">
+                                        <span class="carousel-control-prev-icon"/>
+                                        <span class="visually-hidden">Previous</span>
+                                    </div>
+                                    <div class="carousel-control-next o_not_editable" data-bs-slide="next" role="img" aria-label="Next" title="Next" data-bs-target="#myQuoteCarousel273629">
+                                        <span class="carousel-control-next-icon"/>
+                                        <span class="visually-hidden">Next</span>
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="s_references pt48 pb32" data-snippet="s_references">
+                                <div class="container">
+                                    <h2 style="text-align: center;">Our Partners</h2>
+                                    <p style="text-align: center;">Join the Party.</p>
+                                    <div class="row">
+                                        <div class="col-lg-2 pt16 pb16">
+                                            <img src="/web/image/website.s_reference_demo_image_1" class="img img-fluid mx-auto" alt="" loading="lazy"/>
+                                        </div>
+                                        <div class="col-lg-2 pt16 pb16">
+                                            <img src="/web/image/website.s_reference_demo_image_2" class="img img-fluid mx-auto" alt="" loading="lazy"/>
+                                        </div>
+                                        <div class="col-lg-2 pt16 pb16">
+                                            <img src="/web/image/website.s_reference_demo_image_3" class="img img-fluid mx-auto" alt="" loading="lazy"/>
+                                        </div>
+                                        <div class="col-lg-2 pt16 pb16">
+                                            <img src="/web/image/website.s_reference_demo_image_4" class="img img-fluid mx-auto" alt="" loading="lazy"/>
+                                        </div>
+                                        <div class="col-lg-2 pt16 pb16">
+                                            <img src="/web/image/website.s_reference_demo_image_5" class="img img-fluid mx-auto" alt="" loading="lazy"/>
+                                        </div>
+                                        <div class="col-lg-2 pt16 pb16">
+                                            <img src="/web/image/website.s_reference_default_image_6" class="img img-fluid mx-auto" alt="" loading="lazy"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </field>
+    </record>
+    <record id="ir_ui_view_3335" model="ir.ui.view">
+        <field name="arch" type="xml">
+            <data inherit_id="website.navbar_nav" name="Navbar Links Style" active="False">
+                <xpath expr="//ul[contains(@t-attf-class, 'top_menu')]" position="attributes">
+                    <attribute name="t-attf-class" add="nav-pills" separator=" "/>
+                </xpath>
+            </data>
+        </field>
+        <field name="inherit_id" ref="website.navbar_nav"/>
+        <field name="key">website.header_navbar_pills_style</field>
+        <field name="mode">extension</field>
+        <field name="name">Navbar Links Style</field>
+        <field name="type">qweb</field>
+        <field name="website_id" ref="website.default_website"/>
+    </record>
+</odoo>
