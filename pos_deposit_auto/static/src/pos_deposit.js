@@ -1,185 +1,160 @@
 /** @odoo-module **/
-/*
- * POS Deposit Auto Lines (Odoo 18)
- * - Reads custom fields on products:
- *    - x_deposit_product_1: Many2one to product.product (the deposit product)
- *    - x_quantity_by_deposit_product: Float/Integer factor (e.g., 20 for a case)
- *    - x_unit_sale_product: Many2one to product.product (unit product); if the
- *      main product has no x_deposit_product_1, we try to inherit deposit
- *      from this unit product.
- * - When a product is added, auto-adds a deposit line (qty * factor).
- * - Keeps quantities in sync; removing main line removes its deposit.
- */
 
 import { patch } from "@web/core/utils/patch";
-import { Order, Orderline } from "@point_of_sale/app/store/models";
+import { PosStore } from "point_of_sale/app/store/pos_store";
+import { Order } from "point_of_sale/app/models/order";
+import { Orderline } from "point_of_sale/app/models/line";
 
-function m2oToId(value) {
-    if (!value) return null;
-    if (typeof value === "number") return value;
-    if (Array.isArray(value)) return value[0];
-    if (typeof value === "object" && value.id) return value.id;
+const SYNC_FLAG = "__deposit_sync_in_progress__";
+
+/** m2o helper: number, [id, name], or object with id */
+function m2oId(val) {
+    if (!val) return null;
+    if (typeof val === "number") return val;
+    if (Array.isArray(val)) return val[0];
+    if (typeof val === "object" && val.id) return val.id;
     return null;
-}
-
-function getDepositFactor(prod) {
-    const v = prod?.x_quantity_by_deposit_product;
-    const n = (v === 0 || v) ? Number(v) : 1;
-    return isFinite(n) && n > 0 ? n : 1;
-}
-
-function getQty(line) {
-    if (typeof line.get_quantity === "function") return line.get_quantity();
-    return line.quantity ?? 0;
-}
-
-function getPos(envOrObj) {
-    return envOrObj?.pos || envOrObj?.env?.pos || window?.posmodel || null;
 }
 
 function getProductById(pos, id) {
-    if (!pos || !id) return null;
-    // Odoo 18 still ships PosDB; prefer it
-    if (pos.db && typeof pos.db.get_product_by_id === "function") {
-        return pos.db.get_product_by_id(id);
-    }
-    // Fallback: some builds expose products on pos.models
-    if (pos.models) {
-        const products = pos.models["product.product"] || pos.models.product || {};
-        if (products[id]) return products[id];
-        if (Array.isArray(products)) {
-            const found = products.find((p) => p.id === id);
-            if (found) return found;
-        }
-    }
+    if (!id) return null;
+    if (pos?.productIdToProduct?.[id]) return pos.productIdToProduct[id];
+    if (pos?.db?.product_by_id?.[id]) return pos.db.product_by_id[id];
+    const list = pos?.models?.["product.product"]?.data || [];
+    for (const p of list) if (p.id === id) return p;
     return null;
 }
 
-function resolveDepositProductId(prod, pos) {
-    // 1) Direct field on the product
-    let depId = m2oToId(prod?.x_deposit_product_1);
-    if (depId) return depId;
-    // 2) Inherit from unit sale product if present
-    const unitId = m2oToId(prod?.x_unit_sale_product);
+/**
+ * Resolve deposit product:
+ * 1) product.x_deposit_product_1
+ * 2) product.x_unit_sale_product -> its x_deposit_product_1
+ * 3) fallbacks deposit_product_id / x_deposit_product_id
+ */
+function resolveDepositProductId(pos, product) {
+    const direct = m2oId(product?.x_deposit_product_1);
+    if (direct) return direct;
+    const unitId = m2oId(product?.x_unit_sale_product);
     if (unitId) {
         const unitProd = getProductById(pos, unitId);
-        if (unitProd) {
-            depId = m2oToId(unitProd.x_deposit_product_1);
-            if (depId) return depId;
-        }
+        const nested = m2oId(unitProd?.x_deposit_product_1);
+        if (nested) return nested;
+        const nestedFallback = m2oId(unitProd?.deposit_product_id) || m2oId(unitProd?.x_deposit_product_id);
+        if (nestedFallback) return nestedFallback;
     }
-    return null;
+    return m2oId(product?.deposit_product_id) || m2oId(product?.x_deposit_product_id) || null;
 }
 
-// --- 1) Auto-add deposit after a product is added ---
-patch(Order.prototype, {
-    add_product(product, options = {}) {
-        // Call parent to create/merge the main line
-        const mainLine = super.add_product(product, options);
+/** Resolve deposit factor (qty multiplier) */
+function resolveDepositFactor(pos, product) {
+    const q = Number(product?.x_quantity_by_deposit_product);
+    if (isFinite(q) && q > 0) return q;
+    const f = Number(product?.x_deposit_factor);
+    if (isFinite(f) && f > 0) return f;
+    const unitId = m2oId(product?.x_unit_sale_product);
+    if (unitId) {
+        const unitProd = getProductById(pos, unitId);
+        const uq = Number(unitProd?.x_quantity_by_deposit_product);
+        if (isFinite(uq) && uq > 0) return uq;
+        const uf = Number(unitProd?.x_deposit_factor);
+        if (isFinite(uf) && uf > 0) return uf;
+    }
+    return 1;
+}
+
+function getLineQty(line) {
+    return typeof line.get_quantity === "function" ? line.get_quantity() : line.quantity;
+}
+
+/** Patch 1: add deposit line after adding a main product line */
+patch(PosStore.prototype, {
+    async addLineToOrder(vals, order = this.get_order(), opts = {}, configure = true) {
+        const line = await super.addLineToOrder(vals, order, opts, configure);
         try {
-            // Guard: do not recurse when we add the deposit line itself
-            if (options?.is_deposit) {
-                return mainLine;
-            }
-            const pos = getPos(this);
-            if (!pos || !product) return mainLine;
+            if (!line || !order) return line;
+            const product = line.product || (typeof line.get_product === "function" ? line.get_product() : null);
+            if (!product || line.is_deposit) return line;
 
-            // If a deposit is already linked (due to merge), just sync its quantity and exit
-            if (mainLine.linked_deposit_uid) {
-                const factor = getDepositFactor(product);
-                const dep = this.get_orderlines().find((l) => l.uid === mainLine.linked_deposit_uid);
-                if (dep) {
-                    const newQty = getQty(mainLine) * factor;
-                    Orderline.prototype.set_quantity.call(dep, newQty, options?.keep_price);
-                    return mainLine;
-                }
-            }
+            const depProdId = resolveDepositProductId(this, product);
+            if (!depProdId || depProdId === product.id) return line;
+            const depProd = getProductById(this, depProdId);
+            if (!depProd) return line;
 
-            const depProdId = resolveDepositProductId(product, pos);
-            if (!depProdId) return mainLine;
-            if (depProdId === product.id) return mainLine;  // nonsense config guard
+            const factor = resolveDepositFactor(this, product);
+            const qty = getLineQty(line) * factor;
 
-            const depProd = getProductById(pos, depProdId);
-            if (!depProd) {
-                console.warn("[pos_deposit_auto] Deposit product not loaded/available in POS:", depProdId);
-                return mainLine;
-            }
-
-            // compute qty * factor based on the final merged quantity of the main line
-            const factor = getDepositFactor(product);
-            const qty = getQty(mainLine) * factor;
-            if (!qty) return mainLine;
-
-            // Create deposit line
-            const depLine = super.add_product(depProd, {
-                quantity: qty,
-                is_deposit: true,
-                // keep default price (depProd.lst_price in POS)
-            });
+            // Guard against recursive sync
+            order[SYNC_FLAG] = true;
+            const depLine = await super.addLineToOrder({ productId: depProd.id, qty }, order, {}, false);
+            order[SYNC_FLAG] = false;
 
             if (depLine) {
                 depLine.is_deposit = true;
-                depLine.linked_line_uid = mainLine.uid;
-                mainLine.linked_deposit_uid = depLine.uid;
+                depLine.linked_line_uid = line.uid;
+                line.linked_deposit_uid = depLine.uid;
             }
         } catch (e) {
-            console.warn("[pos_deposit_auto] add_product error:", e);
+            console.warn("[pos_deposit_auto] add deposit failed:", e);
+            order[SYNC_FLAG] = false;
         }
-        return mainLine;
+        return line;
     },
 });
 
-// --- 2) Keep quantities in sync ---
+/** Patch 2: keep quantities in sync (guarded) */
 patch(Orderline.prototype, {
     set_quantity(qty, keep_price) {
+        const order = this.order;
         const res = super.set_quantity(qty, keep_price);
         try {
-            const order = this.order;
-            if (!order) return res;
+            if (!order || order[SYNC_FLAG]) return res;
 
-            // If main line changed, update deposit
             if (this.linked_deposit_uid) {
-                const dep = order.get_orderlines().find((l) => l.uid === this.linked_deposit_uid);
+                const dep = order.get_orderlines().find(l => l.uid === this.linked_deposit_uid);
                 if (dep) {
-                    const factor = getDepositFactor(this.product || {});
-                    const newQty = getQty(this) * factor;
-                    // Avoid recursion by calling super on deposit directly
-                    Orderline.prototype.set_quantity.call(dep, newQty, keep_price);
+                    const product = this.product || (typeof this.get_product === "function" ? this.get_product() : null);
+                    const factor = resolveDepositFactor(order.pos || order?.env?.pos || this.pos, product || {});
+                    const newQty = getLineQty(this) * factor;
+                    order[SYNC_FLAG] = true;
+                    super.set_quantity.call(dep, newQty, keep_price);
+                    order[SYNC_FLAG] = false;
                 }
             }
 
-            // If deposit line changed, enforce sync back to main
             if (this.is_deposit && this.linked_line_uid) {
-                const main = order.get_orderlines().find((l) => l.uid === this.linked_line_uid);
+                const main = order.get_orderlines().find(l => l.uid === this.linked_line_uid);
                 if (main) {
-                    const factor = getDepositFactor(main.product || {});
-                    const newQty = getQty(main) * factor;
-                    super.set_quantity(newQty, keep_price);
+                    const product = main.product || (typeof main.get_product === "function" ? main.get_product() : null);
+                    const factor = resolveDepositFactor(order.pos || order?.env?.pos || this.pos, product || {});
+                    const newQty = getLineQty(main) * factor;
+                    order[SYNC_FLAG] = true;
+                    super.set_quantity.call(this, newQty, keep_price);
+                    order[SYNC_FLAG] = false;
                 }
             }
         } catch (e) {
-            console.warn("[pos_deposit_auto] sync qty error:", e);
+            console.warn("[pos_deposit_auto] qty sync error:", e);
+            if (order) order[SYNC_FLAG] = false;
         }
         return res;
     },
 });
 
-// --- 3) Remove linked deposit when main is removed; unlink if deposit removed ---
+/** Patch 3: linked remove behavior */
 patch(Order.prototype, {
     removeOrderline(line) {
-        const isDeposit = line?.is_deposit;
-        const linkedUid = line?.linked_line_uid || line?.linked_deposit_uid;
+        const order = this;
+        const isDeposit = line && line.is_deposit;
+        const linkedUid = line && (line.linked_line_uid || line.linked_deposit_uid);
         const res = super.removeOrderline(line);
         try {
             if (!linkedUid) return res;
-            const other = this.get_orderlines().find((l) => l.uid === linkedUid);
+            const other = order.get_orderlines().find(l => l.uid === linkedUid);
             if (!other) return res;
             if (!isDeposit && other.is_deposit) {
-                // removed main -> also remove deposit
                 super.removeOrderline(other);
             }
             if (isDeposit && other) {
-                // removed deposit -> just unlink
                 delete other.linked_deposit_uid;
             }
         } catch (e) {
