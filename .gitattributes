@@ -11,7 +11,7 @@
 *.scss text eol=crlf
 *.json text eol=crlf
 
-# Keep typical Unix files LF to avoid CI/runner issues
+# Keep typical Unix files LF
 *.sh  text eol=lf
 *.xml text eol=lf
 *.po  text eol=lf

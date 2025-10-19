@@ -1,25 +1,26 @@
 POS Deposit Auto Lines (Odoo 18)
-================================
+=================================
 
 This addon auto-adds **deposit** lines in the **POS** when a product
-configured with a deposit product is added to the order.
+configured with a deposit is added. It resolves your Studio fields on both
+product variants and templates and exposes simple keys to the POS:
 
-Supported custom fields
------------------------
+* ``pda_deposit_product_id`` — resolved deposit product (product.product id)
+* ``pda_deposit_factor`` — resolved quantity multiplier
 
-* ``x_deposit_product_1`` — m2o to deposit product (``product.product``).
-* ``x_quantity_by_deposit_product`` — number of deposits per main unit.
-* ``x_unit_sale_product`` — case → unit link; if the case has no
-  direct deposit set, the unit product's deposit will be used.
+Supported input fields
+----------------------
+- ``x_deposit_product_1`` (m2o to product.product)
+- ``x_quantity_by_deposit_product`` (numeric factor)
+- ``x_unit_sale_product`` (link to unit product for cases)
+- fallbacks: ``x_deposit_factor``, ``deposit_product_id``, ``x_deposit_product_id``
 
 Configuration
 -------------
-
 1. Create deposit products (Service, Available in POS, 0% VAT).
-2. On each sellable product set ``x_deposit_product_1`` or
-   set ``x_unit_sale_product`` and configure the deposit on that unit .
-3. For cases set ``x_quantity_by_deposit_product`` to the number of units.
-
-Restart the POS session after installing/updating the module.
+2. On the beverage product set ``x_deposit_product_1``; for cases you may set
+   ``x_unit_sale_product`` (pointing to the unit product with a deposit) and
+   ``x_quantity_by_deposit_product`` (e.g., 20).
+3. Restart the POS session.
 
 License: LGPL-3

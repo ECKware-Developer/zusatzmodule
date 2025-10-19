@@ -2,7 +2,7 @@
 {
     "name": "POS Deposit Auto Lines (v18)",
     "summary": "Auto-add deposit lines in POS using custom fields (Odoo 18).",
-    "version": "18.0.3.0.0",
+    "version": "18.0.4.0.0",
     "category": "Point of Sale",
     "author": "Custom",
     "license": "LGPL-3",
