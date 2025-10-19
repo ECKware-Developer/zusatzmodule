@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <record id="view_pos_config_form_inherit_closure_receipt" model="ir.ui.view">
+    <field name="name">pos.config.form.closure.receipt.inherit</field>
+    <field name="model">pos.config</field>
+    <field name="inherit_id" ref="point_of_sale.view_pos_config_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//sheet" position="inside">
+        <group string="Kassenabschluss (Add-on)">
+          <field name="closure_target_cash"/>
+          <field name="print_closure_auto"/>
+        </group>
+      </xpath>
+    </field>
+  </record>
+</odoo>
