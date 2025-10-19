@@ -1,31 +1,31 @@
 # POS Deposit Auto Lines (Odoo 18)
 
-Automatically adds bottle/case **deposit** product lines in **POS** when a product with a linked **deposit product** is added.
-Designed for **Odoo 18** where OCA alternatives are not yet ported.
+Auto-fügt im **POS** eine **Pfand-Position** hinzu, sobald ein Produkt mit Pfand verknüpft wird.
+Dieses Modul ist speziell für **Odoo 18** umgesetzt und nutzt die offiziellen Loader‑Hooks und POS‑Patches.
 
-## How it works
-- Add a Many2one field on the sellable product that points to the **deposit product**.
-  - In Odoo Industries *Beverages*, this field usually exists as **`deposit_product_id`** (shown as *Pfandprodukt*).
-  - If you use a Studio field instead, name it e.g. **`x_deposit_product_id`**; the module will pick it up too.
-- Optionally add a numeric field **`x_deposit_factor`** on the main product (default = 1). Use it to multiply deposits (e.g. a case with 20 bottles).
+## Verwendete Felder (wie von dir genannt)
+- `x_deposit_product_1` → M2O auf **product.product** (Pfandprodukt)
+- `x_quantity_by_deposit_product` → Anzahl/Faktor (z. B. 20 für einen Kasten)
+- `x_unit_sale_product` → M2O auf **product.product** (Einzel‑/Einheiten‑Produkt). Wenn beim Hauptprodukt kein Pfand verknüpft ist, wird das Pfand vom **Einheiten‑Produkt** geerbt.
 
-The module:
-- loads the necessary fields into the POS cache;
-- when a main product line is added, **auto-adds** a second line for the deposit product (same qty × factor);
-- keeps both quantities **in sync**;
-- removes the deposit line if the main line is removed.
+> Falls deine Felder anders heißen, einfach in `models/pos_session.py` und `static/src/pos_deposit.js` austauschen.
 
-## Configuration checklist
-1. Create deposit products (type **Service**, **Available in POS**, **0% VAT**, price e.g. 0.08 €).
-2. On each beverage product, set **Pfandprodukt** (`deposit_product_id`) to the right deposit product.
-3. (Optional) Add **`x_deposit_factor`** = 20 for cases, 1 for single bottles.
-4. Restart the POS session.
+## Funktionsweise
+- Beim Hinzufügen eines Produkts ins POS wird automatisch ein **zweites** POS‑Orderline mit dem Pfandprodukt erstellt.
+- Die Menge ist **(Menge der Hauptzeile × `x_quantity_by_deposit_product`)**.
+- Mengen bleiben **synchron**; Löschen der Hauptzeile löscht die Pfandzeile.
 
-## Notes
-- Deposit appears as its own POS line (legally cleaner, TSE-friendly).
-- The module is small and does not change accounting logic; use your own accounts for the deposit product/category.
-- If your database uses a custom field for the deposit link, add its technical name to the arrays in:
-  - `models/product_template.py` and `models/product_product.py`
-  - `static/src/pos_deposit.js` (function `getDepositProductId`).
+## Voraussetzungen
+- Pfandprodukte sind **im POS verfügbar** (Häkchen „Im Kassensystem“).
+- Pfandprodukte haben **0 % USt** (TSE‑freundlich, wenn DE).
 
-License: LGPL-3
+## Installation
+1. Ordner `pos_deposit_auto_v18` in deinen Addons‑Pfad / Repo „Zusatzmodule“ kopieren.
+2. **Apps → Apps‑Liste aktualisieren** → Modul **POS Deposit Auto Lines (v18)** installieren.
+3. POS‑Sitzung **schließen & neu öffnen**.
+
+## Technisches
+- Lädt Felder via `pos.session._loader_params_product_product`.
+- Frontend‑Patch: `Order.add_product`, `Orderline.set_quantity`, `Order.removeOrderline`.
+- Assets‑Bundle: `point_of_sale._assets_pos` (Odoo 18).
+- Lizenz: LGPL‑3
