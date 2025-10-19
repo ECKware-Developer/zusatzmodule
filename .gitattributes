@@ -1,0 +1,11 @@
+* text=auto
+*.py  text eol=crlf
+*.md  text eol=crlf
+*.csv text eol=crlf
+*.js  text eol=crlf
+*.html text eol=crlf
+*.json text eol=crlf
+*.rst text eol=crlf
+*.xml text eol=lf
+*.po  text eol=lf
+*.sh  text eol=lf
