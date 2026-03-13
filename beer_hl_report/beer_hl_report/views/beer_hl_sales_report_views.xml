@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_x_beer_hl_sales_report_tree" model="ir.ui.view">
+        <field name="name">x.beer.hl.sales.report.tree</field>
+        <field name="model">x_beer_hl_sales_report</field>
+        <field name="arch" type="xml">
+            <tree string="Beer hL Sales Report" create="false" edit="false" delete="false">
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <field name="source"/>
+                <field name="quantity" sum="Total Qty"/>
+                <field name="hl_per_unit"/>
+                <field name="hl_total" sum="Total hL"/>
+                <field name="amount_untaxed" sum="Total Amount"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_x_beer_hl_sales_report_pivot" model="ir.ui.view">
+        <field name="name">x.beer.hl.sales.report.pivot</field>
+        <field name="model">x_beer_hl_sales_report</field>
+        <field name="arch" type="xml">
+            <pivot string="Beer hL Sales" disable_linking="true">
+                <field name="partner_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="hl_total" type="measure"/>
+                <field name="quantity" type="measure"/>
+                <field name="amount_untaxed" type="measure"/>
+                <field name="source" type="col"/>
+                <field name="product_id" type="row"/>
+                <field name="company_id" type="row" groups="base.group_multi_company"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_x_beer_hl_sales_report_graph" model="ir.ui.view">
+        <field name="name">x.beer.hl.sales.report.graph</field>
+        <field name="model">x_beer_hl_sales_report</field>
+        <field name="arch" type="xml">
+            <graph string="Beer hL Sales" type="bar" sample="1">
+                <field name="date" interval="month"/>
+                <field name="hl_total" type="measure"/>
+                <field name="partner_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_x_beer_hl_sales_report_search" model="ir.ui.view">
+        <field name="name">x.beer.hl.sales.report.search</field>
+        <field name="model">x_beer_hl_sales_report</field>
+        <field name="arch" type="xml">
+            <search string="Beer hL Sales Report">
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <field name="source"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <filter string="Invoices" name="filter_invoices" domain="[('source', '=', 'invoice')]"/>
+                <filter string="POS" name="filter_pos" domain="[('source', '=', 'pos')]"/>
+                <separator/>
+                <filter string="Date" name="filter_date" date="date"/>
+                <group expand="0" string="Group By">
+                    <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Product" name="group_product" context="{'group_by': 'product_id'}"/>
+                    <filter string="Month" name="group_month" context="{'group_by': 'date:month'}"/>
+                    <filter string="Source" name="group_source" context="{'group_by': 'source'}"/>
+                    <filter string="Company" name="group_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_x_beer_hl_sales_report" model="ir.actions.act_window">
+        <field name="name">Beer hL Sales</field>
+        <field name="res_model">x_beer_hl_sales_report</field>
+        <field name="view_mode">pivot,graph,tree</field>
+        <field name="search_view_id" ref="view_x_beer_hl_sales_report_search"/>
+        <field name="context">{'search_default_group_partner': 1, 'search_default_group_month': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Analyse beer sales in hectoliters from posted invoices and POS orders.
+            </p>
+            <p>
+                The report reads the custom product field <code>x_studio_inhalt_in_hl</code> from the product template.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_x_beer_hl_sales_report_root"
+              name="Beer Reporting"
+              parent="account.menu_finance_reporting"
+              sequence="95"/>
+
+    <menuitem id="menu_x_beer_hl_sales_report"
+              name="Beer hL Sales"
+              parent="menu_x_beer_hl_sales_report_root"
+              action="action_x_beer_hl_sales_report"
+              sequence="10"/>
+</odoo>
