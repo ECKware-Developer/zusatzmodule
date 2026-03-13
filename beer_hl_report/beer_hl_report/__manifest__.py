@@ -10,5 +10,5 @@
         'views/beer_hl_sales_report_views.xml',
     ],
     'installable': True,
-    'application': False,
+    'application': True,
 }
